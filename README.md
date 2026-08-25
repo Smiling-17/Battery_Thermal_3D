@@ -21,21 +21,20 @@ This project bridges the gap between raw field telemetry (1.45+ GB of sensor dat
 
 ## 📐 System Architecture
 
-`mermaid
+```mermaid
 graph TD
-    A[(Raw Field Data<br/>1.45GB CSV)] -->|Python Pipeline| B(Data Processing<br/>\uild_sys5_digital_twin.py\)
-    B -->|Validation| C{Data Validation<br/>\alidate_sys5_digital_twin.py\}
-    B -->|Chunking & Aggregation| D[Optimized JSON Chunks<br/>\
-aw_daily/*.json\]
-    D -->|Fetch API| E(Frontend Engine<br/>\data-loader.js\)
-    E -->|Physics State| F(Three.js Renderer<br/>\scene-bindings.js\)
+    A[(Raw Field Data<br/>1.45GB CSV)] -->|Python Pipeline| B(Data Processing<br/>`build_sys5_digital_twin.py`)
+    B -->|Validation| C{Data Validation<br/>`validate_sys5_digital_twin.py`}
+    B -->|Chunking & Aggregation| D[Optimized JSON Chunks<br/>`raw_daily/*.json`]
+    D -->|Fetch API| E(Frontend Engine<br/>`data-loader.js`)
+    E -->|Physics State| F(Three.js Renderer<br/>`scene-bindings.js`)
     F --> G[Interactive 3D Web Interface]
     
     style A fill:#2d3436,stroke:#dfe6e9,stroke-width:2px,color:#fff
     style B fill:#0984e3,stroke:#74b9ff,stroke-width:2px,color:#fff
     style D fill:#00b894,stroke:#55efc4,stroke-width:2px,color:#fff
     style G fill:#d63031,stroke:#fab1a0,stroke-width:2px,color:#fff
-`
+```
 
 ## 📥 Dataset Download
 Because the raw field data exceeds GitHub's size limits (**1.45 GB**), the dataset is not included in this repository. 
@@ -44,8 +43,8 @@ You can download the full dataset (both the raw CSV and the pre-processed JSON c
 [**📥 Download Battery_Thermal_3D_dataset**](https://drive.google.com/drive/folders/1UREt09zBo2cqDqZAb9PZWRsE_4If0K20?usp=sharing)
 
 *Instructions:* Extract the downloaded folders and merge them into the root directory. 
-- \data/data_sys_5.csv\ (Raw Data)
-- \simulation_3d/processed/\ (Compiled JSON chunks - skips the build step!)
+- `data/data_sys_5.csv` (Raw Data)
+- `simulation_3d/processed/` (Compiled JSON chunks - skips the build step!)
 
 ## 🚀 Quick Start
 
@@ -53,28 +52,28 @@ You can download the full dataset (both the raw CSV and the pre-processed JSON c
 - **Python 3.8+** (for data processing pipeline)
 - A modern web browser with WebGL support
 
-`ash
+```bash
 # Clone the repository
 git clone https://github.com/Smiling-17/Battery_Thermal_3D.git
 cd Battery_Thermal_3D
 
 # Install Python dependencies
 pip install -r requirements.txt
-`
+```
 
 ### 1. Build the Digital Twin Data (Optional if downloaded from Drive)
-If you downloaded the raw CSV but not the \processed/\ folder, you must build the JSON chunks:
-`ash
+If you downloaded the raw CSV but not the `processed/` folder, you must build the JSON chunks:
+```bash
 python tools/build_sys5_digital_twin.py
-`
+```
 *(Note: Processing ~10 million rows will take a few minutes).*
 
 ### 2. Run the Visualization Server
 Since the application fetches local JSON files, it must be served over HTTP:
-`ash
+```bash
 cd simulation_3d
 python -m http.server 5173
-`
+```
 
 ### 3. View the Application
 Open your browser and navigate to: **http://localhost:5173**
@@ -101,21 +100,20 @@ Dự án này là cầu nối giữa dữ liệu cảm biến thô (hơn 1.45 GB
 
 ## 📐 Kiến trúc Hệ thống
 
-`mermaid
+```mermaid
 graph TD
-    A[(Dữ liệu thô CSV<br/>1.45GB)] -->|Python Pipeline| B(Xử lý Dữ liệu<br/>\uild_sys5_digital_twin.py\)
-    B -->|Kiểm định| C{Validate Dữ liệu<br/>\alidate_sys5_digital_twin.py\}
-    B -->|Phân mảnh & Tổng hợp| D[Các gói JSON Tối ưu<br/>\
-aw_daily/*.json\]
-    D -->|Fetch API| E(Frontend Engine<br/>\data-loader.js\)
-    E -->|Trạng thái Vật lý| F(Three.js Renderer<br/>\scene-bindings.js\)
+    A[(Dữ liệu thô CSV<br/>1.45GB)] -->|Python Pipeline| B(Xử lý Dữ liệu<br/>`build_sys5_digital_twin.py`)
+    B -->|Kiểm định| C{Validate Dữ liệu<br/>`validate_sys5_digital_twin.py`}
+    B -->|Phân mảnh & Tổng hợp| D[Các gói JSON Tối ưu<br/>`raw_daily/*.json`]
+    D -->|Fetch API| E(Frontend Engine<br/>`data-loader.js`)
+    E -->|Trạng thái Vật lý| F(Three.js Renderer<br/>`scene-bindings.js`)
     F --> G[Giao diện Web 3D Tương tác]
     
     style A fill:#2d3436,stroke:#dfe6e9,stroke-width:2px,color:#fff
     style B fill:#0984e3,stroke:#74b9ff,stroke-width:2px,color:#fff
     style D fill:#00b894,stroke:#55efc4,stroke-width:2px,color:#fff
     style G fill:#d63031,stroke:#fab1a0,stroke-width:2px,color:#fff
-`
+```
 
 ## 📥 Tải Dữ liệu (Dataset)
 Vì dữ liệu thô vượt quá giới hạn lưu trữ của GitHub (**1.45 GB**), dataset không được đính kèm trực tiếp trong repository này.
@@ -124,8 +122,8 @@ Bạn có thể tải toàn bộ dữ liệu (cả file CSV thô và thư mục 
 [**📥 Tải Battery_Thermal_3D_dataset**](https://drive.google.com/drive/folders/1UREt09zBo2cqDqZAb9PZWRsE_4If0K20?usp=sharing)
 
 *Hướng dẫn:* Giải nén và chép đè 2 thư mục tải về vào thư mục gốc của project:
-- \data/data_sys_5.csv\ (Dữ liệu gốc)
-- \simulation_3d/processed/\ (Dữ liệu JSON đã build sẵn - copy vào để dùng website ngay lập tức!)
+- `data/data_sys_5.csv` (Dữ liệu gốc)
+- `simulation_3d/processed/` (Dữ liệu JSON đã build sẵn - copy vào để dùng website ngay lập tức!)
 
 ## 🚀 Hướng dẫn Cài đặt & Chạy ứng dụng
 
@@ -133,28 +131,28 @@ Bạn có thể tải toàn bộ dữ liệu (cả file CSV thô và thư mục 
 - **Python 3.8+** (nếu bạn muốn tự chạy script xử lý data)
 - Trình duyệt Web hiện đại hỗ trợ WebGL
 
-`ash
+```bash
 # Clone repository về máy
 git clone https://github.com/Smiling-17/Battery_Thermal_3D.git
 cd Battery_Thermal_3D
 
 # Cài đặt thư viện Python
 pip install -r requirements.txt
-`
+```
 
 ### 1. Build Dữ liệu (Bỏ qua bước này nếu đã copy thư mục processed từ Drive)
 Nếu bạn chỉ tải file CSV, bạn cần chạy script để build ra các file JSON tĩnh:
-`ash
+```bash
 python tools/build_sys5_digital_twin.py
-`
+```
 *(Lưu ý: Quá trình quét ~10 triệu dòng dữ liệu sẽ mất vài phút).*
 
 ### 2. Bật Web Server
 Website cần một Local HTTP Server để tải các file JSON:
-`ash
+```bash
 cd simulation_3d
 python -m http.server 5173
-`
+```
 
 ### 3. Trải nghiệm
 Mở trình duyệt và truy cập: **http://localhost:5173**
