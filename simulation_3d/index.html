@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battery-Thermal-3D</title>
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="viewport" aria-label="3D simulation of 8-cell LFP battery system">
+        <canvas id="battery-canvas"></canvas>
+        <div id="labels" class="labels-layer"></div>
+      </section>
+
+      <aside class="control-panel" aria-label="Simulation control panel">
+        <div class="panel-head">
+          <p class="eyebrow">Battery system 5</p>
+          <h1>24V LFP 8s1p pack</h1>
+        </div>
+
+        <div class="spec-grid" aria-label="System specifications">
+          <span>Cells</span><strong>8 in series</strong>
+          <span>Nominal</span><strong>24V / ~160Ah</strong>
+          <span>Sensors</span><strong>1 current, 9 voltage, 4 temp</strong>
+          <span>Balancing</span><strong>8 active channels</strong>
+        </div>
+
+        <div class="data-card" aria-label="Digital twin status">
+          <div class="data-status" id="data-status">Searching for processed dataset...</div>
+          <select id="date-select" aria-label="Select data date"></select>
+        </div>
+
+        <div class="mode-grid" role="group" aria-label="Heatmap mode">
+          <button class="is-active" data-heat-mode="estimated" type="button">Estimated Temp</button>
+          <button data-heat-mode="measured" type="button">Measured Temp</button>
+          <button data-heat-mode="heat" type="button">Heat Gen</button>
+          <button data-heat-mode="risk" type="button">Thermal Risk</button>
+        </div>
+
+        <div class="telemetry" aria-label="Current frame values">
+          <div><span>Time</span><strong id="metric-time">--</strong></div>
+          <div><span>Pack</span><strong id="metric-pack">--</strong></div>
+          <div><span>Cell V</span><strong id="metric-voltage">--</strong></div>
+          <div><span>Spread</span><strong id="metric-spread">--</strong></div>
+          <div><span>Max temp</span><strong id="metric-temp">--</strong></div>
+          <div><span>Max heat</span><strong id="metric-heat">--</strong></div>
+        </div>
+
+        <div class="confidence" id="confidence-badge">No processed data</div>
+
+        <div class="colorbar-wrap" aria-label="Heatmap color scale">
+          <div id="colorbar" class="colorbar"></div>
+          <div class="colorbar-meta">
+            <span id="colorbar-label">Estimated Cell Temp</span>
+            <span id="colorbar-range">0 - 60 deg C</span>
+          </div>
+        </div>
+
+        <div class="segmented" role="group" aria-label="Current mode">
+          <button id="mode-discharge" class="is-active" type="button" title="Discharge current">
+            <span class="icon">⚡</span>
+            <span>Discharge</span>
+          </button>
+          <button id="mode-charge" type="button" title="Charge current">
+            <span class="icon">🔋</span>
+            <span>Charge</span>
+          </button>
+        </div>
+
+        <label class="slider-row" for="explode-slider">
+          <span>Explode pack</span>
+          <input id="explode-slider" type="range" min="0" max="100" value="0" />
+        </label>
+
+        <label class="slider-row" for="frame-slider">
+          <span>Timeline</span>
+          <input id="frame-slider" type="range" min="0" max="0" value="0" />
+        </label>
+
+        <div class="playback-row">
+          <button id="play-toggle" type="button" title="Play/pause data playback">
+            <span class="icon">▶</span>
+            <span>Play</span>
+          </button>
+          <select id="speed-select" aria-label="Playback speed">
+            <option value="60">60x</option>
+            <option value="300" selected>300x</option>
+            <option value="900">900x</option>
+            <option value="3600">3600x</option>
+          </select>
+        </div>
+
+        <div class="switch-list">
+          <label>
+            <input id="toggle-labels" type="checkbox" checked />
+            <span>Labels</span>
+          </label>
+          <label>
+            <input id="toggle-sensors" type="checkbox" checked />
+            <span>Sensors</span>
+          </label>
+          <label>
+            <input id="toggle-balancing" type="checkbox" checked />
+            <span>Cell balancing</span>
+          </label>
+          <label>
+            <input id="toggle-current" type="checkbox" checked />
+            <span>Current path</span>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button id="reset-view" type="button" title="Reset view">
+            <span class="icon">⟲</span>
+            <span>Reset</span>
+          </button>
+          <button id="top-view" type="button" title="Top view">
+            <span class="icon">⬆</span>
+            <span>Top</span>
+          </button>
+        </div>
+      </aside>
+
+      <section class="surface-panel" aria-label="U-I-T surface plot">
+      <div class="surface-head">
+        <div class="surface-title-row">
+          <span class="surface-title">U – I – T surface</span>
+          <strong id="surface-meta">--</strong>
+        </div>
+        <div class="surface-axis-row">
+          <span>← I [A] (discharge / charge) →</span>
+          <span>U [V] (height) ↑</span>
+          <span>← T [°C] (temperature) →</span>
+        </div>
+      </div>
+      <canvas id="uit-surface-canvas"></canvas>
+      </section>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

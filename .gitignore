@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Project-specific ignores
+# Ignore the 1.45GB raw data file (GitHub blocks >100MB files)
+data/data_sys_5.csv
+
+# Ignore all generated JSON data for the simulation (users should generate this themselves)
+simulation_3d/processed/
